@@ -130,16 +130,16 @@ def main():
             if event.type == pygame.VIDEORESIZE:
                 DIMENSIONS = get_dimensions(screen)
                 screen, play_area, boxes = setup_screens(DIMENSIONS)
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pass
-            elif event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:
-                    rectangle_draging = False
+            # if event.type == pygame.MOUSEBUTTONDOWN:
+            #     pass
+            # elif event.type == pygame.MOUSEBUTTONUP:
+            #     if event.button == 1:
+            #         rectangle_draging = False
 
-            elif event.type == pygame.MOUSEMOTION:
-                for card in cards:
-                    if rectangle_draging:
-                        card.pos = event.pos
+            # elif event.type == pygame.MOUSEMOTION:
+            #     for card in cards:
+            #         if rectangle_draging:
+            #             card.pos = event.pos
 
         # draw the main board
         draw_board(screen, play_area, boxes, DIMENSIONS)
