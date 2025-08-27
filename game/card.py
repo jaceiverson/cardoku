@@ -3,6 +3,8 @@ from enum import Enum
 
 import pygame
 import tqdm
+from colors import TEXT_COLOR
+from configs import FONT
 from rich import print
 
 
@@ -15,19 +17,30 @@ class Suit(Enum):
 
 class Card:
     def __init__(self, file_path: str, pygame_image_of_card: pygame.Surface):
-        self.raw_name = file_path.split("/")[-1]
-        self.image = pygame_image_of_card
-        self.image_w, self.image_h = self.image.get_size()
+        self.file_path: str = file_path
+        self.raw_name: str = file_path.split("/")[-1]
+
+        # GAME ATTRIBUTES
         self.suit: Suit = self.determine_suit()
         self.rank: str = self.determine_rank()
         self.value: int = self.determine_value()
+        self.short_hand: str = f"{self.rank}.{str(self.suit)[0]}"
+
+        # PYGAME ATTRIBUTES
+        self.image: pygame.Surface = pygame_image_of_card
+        self.rect: pygame.Rect = self.image.get_rect()
+        self.original_size: pygame.Rect = self.rect
+        self.image_w, self.image_h = self.image.get_size()
+        self.backside_up: bool = False
         self.dragging: bool = False
         self.in_grid: bool = False
-        self.big_image: pygame.Surface = pygame.transform.scale(
-            self.image, (self.image_w / 2, self.image_h / 2)
+        self.display_image: pygame.Surface = self.resize_image(200)
+        self.big_image: pygame.Surface = self.resize_image(self.original_size[1] / 2)
+        self.small_image: pygame.Surface = self.resize_image(
+            self.original_size[1] * 0.06
         )
-        self.small_image: pygame.Surface = pygame.transform.scale(
-            self.image, (self.image_w * 0.06, self.image_h * 0.06)
+        self.display_short_hand: pygame.Surface = FONT.render(
+            self.short_hand, True, TEXT_COLOR
         )
 
     def determine_suit(self):
@@ -63,7 +76,7 @@ class Card:
         else:
             return int(self.rank)
 
-    def resize_image(self, new_height_dimension: int):
+    def resize_image(self, new_height_dimension: int) -> pygame.Surface:
         ratio = new_height_dimension / self.image_h
         return pygame.transform.smoothscale(
             self.image, (self.image_w * ratio, self.image_h * ratio)

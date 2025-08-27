@@ -2,3 +2,4 @@ pygame
 rich
 matplotlib
 tqdm
+pytest
